@@ -10,6 +10,7 @@ class FlickityComponent extends Component {
 
     this.state = {
       selectedIndex: 0,
+      isPaused: true,
     };
 
     this.carousel = null;
@@ -28,10 +29,25 @@ class FlickityComponent extends Component {
     }
   }
 
+  pausePlayer() {
+    this.flkty.pausePlayer();
+  }
+
+  unpausePlayer() {
+    this.flkty.player.state == 'stopped'
+      ? this.flkty.playPlayer()
+      : this.flkty.unpausePlayer();
+  }
+
+  togglePausePlayer() {
+    this.isPaused ? this.unpausePlayer() : this.pausePlayer();
+  }
+
   componentDidUpdate() {
     if (this.props.reloadOnUpdate) {
       this.flkty.reloadCells();
     }
+    this.props.options.autoPlay ? this.unpausePlayer() : this.pausePlayer();
   }
 
   componentWillUnmount() {
@@ -47,6 +63,7 @@ class FlickityComponent extends Component {
         this.carousel,
         function(instance) {
           this.flkty.reloadCells();
+          this.flkty.resize();
         }.bind(this)
       );
     }
